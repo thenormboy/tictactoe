@@ -18,4 +18,20 @@ const Gameboard = (() => {
 
 })();
 
+const cell = () => {
+    
+}
+
+const player = (name, token) => {
+    const getName = () => name;
+    const getToken = () => token;
+
+
+}
+
+const GameController = (() => {
+    const player1 = player("Player 1", "X");
+    const player2 = player("Player Two", "O");
+})
+
 console.log(Gameboard.getBoard());
