@@ -11,27 +11,46 @@ const Gameboard = (() => {
     }
 
     const getBoard = () => board;
+    const getCell = (rowIndex, columnIndex) => board[rowIndex][columnIndex]
+
+    const placeToken = (player, rowLocation, columnLocation) => {
+        board[rowLocation][columnLocation] = player;
+    }
 
     return {
-        getBoard
+        getBoard,
+        getCell,
+        placeToken
     }
 
 })();
 
-const cell = () => {
+//const cell = () => {
+//    let value = '';
+
+//    const changeCell = (player) => {
+//        value = player.getToken();
+//    }
+
+//    return value;
     
-}
+//}
 
 const player = (name, token) => {
     const getName = () => name;
     const getToken = () => token;
 
-
+    return { getName, getToken}
 }
 
 const GameController = (() => {
-    const player1 = player("Player 1", "X");
+    const player1 = player("Player One", "X");
     const player2 = player("Player Two", "O");
+
+
+    Gameboard.placeToken(player2.getToken(), 0, 0);
+    console.log(Gameboard.getBoard());
+
 })
 
-console.log(Gameboard.getBoard());
+GameController();
