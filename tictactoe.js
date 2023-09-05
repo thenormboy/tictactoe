@@ -12,7 +12,7 @@ const Gameboard = (() => {
     }
 
     const getBoard = () => board;
-    const getCell = (rowIndex, columnIndex) => board[rowIndex][columnIndex]
+
 
     const placeToken = (player, rowLocation, columnLocation) => {
         board[rowLocation][columnLocation] = player;
@@ -20,11 +20,11 @@ const Gameboard = (() => {
 
     const displayBoard = () => {
         container.textContent = '';
-
-        (Gameboard.getBoard()).forEach(element => {
-            element.forEach(content => {
+        (Gameboard.getBoard()).forEach((element, rowIndex) => {
+            element.forEach((content, columnIndex) => {
                 const cell = document.createElement('div');
                 cell.textContent = content;
+                cell.setAttribute('id', [rowIndex, columnIndex] )
                 container.appendChild(cell).className = 'grid-item';
             })
         });
@@ -32,7 +32,6 @@ const Gameboard = (() => {
 
     return {
         getBoard,
-        getCell,
         placeToken,
         displayBoard
     }
@@ -62,8 +61,11 @@ const DisplayController = (() => {
 
     const getActivePlayer = () => activePlayer;
 
-
-
+//    game.forEach(row => {
+//        row.forEach((cell, index) => {
+            
+//        })
+//    })
 
     game.displayBoard();
 
