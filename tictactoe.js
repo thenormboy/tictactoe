@@ -13,7 +13,6 @@ const Gameboard = (() => {
 
     const getBoard = () => board;
 
-
     const placeToken = (player, rowLocation, columnLocation) => {
         board[rowLocation][columnLocation] = player;
     }
@@ -23,9 +22,16 @@ const Gameboard = (() => {
         (Gameboard.getBoard()).forEach((element, rowIndex) => {
             element.forEach((content, columnIndex) => {
                 const cell = document.createElement('div');
+
+                cell.addEventListener('click', () => {
+                    Gameboard.placeToken(DisplayController.getActivePlayer().getToken(), cell.getAttribute('id')[0], cell.getAttribute('id')[2]);
+                    Gameboard.displayBoard();
+                    DisplayController.switchPlayerTurn();
+                })
+                
                 cell.textContent = content;
                 cell.setAttribute('id', [rowIndex, columnIndex] )
-                container.appendChild(cell).className = 'grid-item';
+                container.appendChild(cell).className = 'cell';
             })
         });
     }
@@ -49,6 +55,8 @@ const DisplayController = (() => {
     const game = Gameboard;
     const players = [player("Player One", "X"), player("Player Two", "O")]
 
+    game.displayBoard();
+
     let activePlayer = players[0];
 
     const switchPlayerTurn = () => {
@@ -61,14 +69,15 @@ const DisplayController = (() => {
 
     const getActivePlayer = () => activePlayer;
 
-//    game.forEach(row => {
-//        row.forEach((cell, index) => {
-            
-//        })
-//    })
+    const playRound = () => {
+        game;
+    }
 
-    game.displayBoard();
+    return {
+        getActivePlayer,
+        playRound,
+        switchPlayerTurn
+    }
+})();
 
-})
-
-DisplayController();
+DisplayController.playRound();
