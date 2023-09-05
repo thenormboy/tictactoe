@@ -7,7 +7,7 @@ const Gameboard = (() => {
     for (i = 0; i < row; i++) {
         board[i] = [];
         for (j = 0; j < column; j++) {
-            board[i].push('x');
+            board[i].push('');
         }
     }
 
@@ -19,6 +19,8 @@ const Gameboard = (() => {
     }
 
     const displayBoard = () => {
+        container.textContent = '';
+
         (Gameboard.getBoard()).forEach(element => {
             element.forEach(content => {
                 const cell = document.createElement('div');
@@ -41,17 +43,30 @@ const player = (name, token) => {
     const getName = () => name;
     const getToken = () => token;
 
-    return { getName, getToken}
+    return { getName, getToken }
 }
 
-const GameController = (() => {
-    const player1 = player("Player One", "X");
-    const player2 = player("Player Two", "O");
+const DisplayController = (() => {
+    const game = Gameboard;
+    const players = [player("Player One", "X"), player("Player Two", "O")]
 
-    Gameboard.displayBoard();
-    Gameboard.placeToken(player2.getToken(), 0, 0);
-    console.log(Gameboard.getBoard());
+    let activePlayer = players[0];
+
+    const switchPlayerTurn = () => {
+        if (activePlayer === players[0]) {
+            activePlayer = players[1]
+        } else {
+            activePlayer = players[0]
+        }
+    }
+
+    const getActivePlayer = () => activePlayer;
+
+
+
+
+    game.displayBoard();
 
 })
 
-GameController();
+DisplayController();
