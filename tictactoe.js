@@ -17,7 +17,7 @@ const Gameboard = (() => {
         board[rowLocation][columnLocation] = player.getToken();
         player.getRowArray().push(rowLocation);
         player.getColumnArray().push(columnLocation);
-        player.getCellArray(rowLocation, columnLocation)
+        player.getCellArray().push([rowLocation, columnLocation])
     }
 
     const displayBoard = () => {
@@ -30,9 +30,9 @@ const Gameboard = (() => {
                     Gameboard.placeToken(DisplayController.getActivePlayer(), cell.getAttribute('id')[0], cell.getAttribute('id')[2]);
                     Gameboard.displayBoard();
 
-                    console.log(DisplayController.getActivePlayer().getCellArray())
-
-                    if ((DisplayController.checkWinCondition(DisplayController.getActivePlayer().getRowArray()) == true) && (DisplayController.checkWinCondition(DisplayController.getActivePlayer().getColumnArray()) == true)) {
+                    if (((DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getRowArray()) == true) || 
+                        (DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getColumnArray()) == true)) || 
+                        (DisplayController.checkWinConditionTwo(DisplayController.getActivePlayer().getCellArray()) == true)) {
                         console.log(DisplayController.getActivePlayer().getName())
                     }
 
@@ -59,7 +59,7 @@ const player = (name, token, rowArray, columnArray, cellArray) => {
     const getToken = () => token;
     const getRowArray = () => rowArray;
     const getColumnArray = () => columnArray;
-    const getCellArray = (row, column) => cellArray.push([row, column])
+    const getCellArray = () => cellArray;
 
     return { getName, getToken, getRowArray, getColumnArray, getCellArray }
 }
@@ -86,7 +86,7 @@ const DisplayController = (() => {
         game;
     }
 
-    const checkWinCondition = (playerArray) => {
+    const checkWinConditionOne = (playerArray) => {
 
         let checkZeroes = []
         let checkOnes = []
@@ -96,35 +96,48 @@ const DisplayController = (() => {
             checkZeroes = playerArray.filter((value) => value == '0');
             if (checkZeroes.length == 3) {
                 return true;
-            } else if (playerArray.includes('2') && playerArray.includes('1')) {
-                return true;
             } 
         } else if (playerArray.includes('1')) {
             checkOnes = playerArray.filter((value) => value == '1')
             if (checkOnes.length == 3) {
-                return true;
-            } else if (playerArray.includes('0') && playerArray.includes('2')) {
                 return true;
             } 
         } else if (playerArray.includes('2')) {
             checkTwos = playerArray.filter((value) => value == '2')
             if (checkTwos.length == 3) {
                 return true;
-            } else if (playerArray.includes('0') && playerArray.includes('1')) {
-                return true;
-            } else {
-                return false;
             }
         } else {
             return false;
         }
     }
 
+    const checkWinConditionTwo = (playerArray) => {
+
+        let playerArrayString = [];
+
+        playerArray.forEach(turnToString);
+
+        function turnToString(value) {
+            playerArrayString.push(value.toString())
+        }
+
+        if (playerArrayString.includes('0,0') && playerArrayString.includes('1,1') && playerArrayString.includes('2,2')) {
+            return true;
+        } else if (playerArrayString.includes('0,2') && playerArrayString.includes('1,1') && playerArrayString.includes('2,0')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+
     return {
         getActivePlayer,
         playRound,
         switchPlayerTurn,
-        checkWinCondition
+        checkWinConditionOne,
+        checkWinConditionTwo
     }
 })();
 
