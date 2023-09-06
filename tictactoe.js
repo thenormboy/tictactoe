@@ -14,7 +14,10 @@ const Gameboard = (() => {
     const getBoard = () => board;
 
     const placeToken = (player, rowLocation, columnLocation) => {
-        board[rowLocation][columnLocation] = player;
+        board[rowLocation][columnLocation] = player.getToken();
+        player.getRowArray().push(rowLocation);
+        player.getColumnArray().push(columnLocation);
+        player.getCellArray(rowLocation, columnLocation)
     }
 
     const displayBoard = () => {
@@ -24,8 +27,15 @@ const Gameboard = (() => {
                 const cell = document.createElement('div');
 
                 cell.addEventListener('click', () => {
-                    Gameboard.placeToken(DisplayController.getActivePlayer().getToken(), cell.getAttribute('id')[0], cell.getAttribute('id')[2]);
+                    Gameboard.placeToken(DisplayController.getActivePlayer(), cell.getAttribute('id')[0], cell.getAttribute('id')[2]);
                     Gameboard.displayBoard();
+
+                    console.log(DisplayController.getActivePlayer().getCellArray())
+
+                    if ((DisplayController.checkWinCondition(DisplayController.getActivePlayer().getRowArray()) == true) && (DisplayController.checkWinCondition(DisplayController.getActivePlayer().getColumnArray()) == true)) {
+                        console.log(DisplayController.getActivePlayer().getName())
+                    }
+
                     DisplayController.switchPlayerTurn();
                 })
                 
@@ -44,16 +54,19 @@ const Gameboard = (() => {
 
 })();
 
-const player = (name, token) => {
+const player = (name, token, rowArray, columnArray, cellArray) => {
     const getName = () => name;
     const getToken = () => token;
+    const getRowArray = () => rowArray;
+    const getColumnArray = () => columnArray;
+    const getCellArray = (row, column) => cellArray.push([row, column])
 
-    return { getName, getToken }
+    return { getName, getToken, getRowArray, getColumnArray, getCellArray }
 }
 
 const DisplayController = (() => {
     const game = Gameboard;
-    const players = [player("Player One", "X"), player("Player Two", "O")]
+    const players = [player("Player One", "X", [], [], []), player("Player Two", "O", [], [], [])]
 
     game.displayBoard();
 
@@ -73,10 +86,45 @@ const DisplayController = (() => {
         game;
     }
 
+    const checkWinCondition = (playerArray) => {
+
+        let checkZeroes = []
+        let checkOnes = []
+        let checkTwos = []
+
+        if (playerArray.includes('0')) {
+            checkZeroes = playerArray.filter((value) => value == '0');
+            if (checkZeroes.length == 3) {
+                return true;
+            } else if (playerArray.includes('2') && playerArray.includes('1')) {
+                return true;
+            } 
+        } else if (playerArray.includes('1')) {
+            checkOnes = playerArray.filter((value) => value == '1')
+            if (checkOnes.length == 3) {
+                return true;
+            } else if (playerArray.includes('0') && playerArray.includes('2')) {
+                return true;
+            } 
+        } else if (playerArray.includes('2')) {
+            checkTwos = playerArray.filter((value) => value == '2')
+            if (checkTwos.length == 3) {
+                return true;
+            } else if (playerArray.includes('0') && playerArray.includes('1')) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     return {
         getActivePlayer,
         playRound,
-        switchPlayerTurn
+        switchPlayerTurn,
+        checkWinCondition
     }
 })();
 
