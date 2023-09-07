@@ -20,11 +20,8 @@ const Gameboard = (() => {
         player.getCellArray().push([rowLocation, columnLocation])
     }
 
-    const displayBoard = () => {
-        container.textContent = '';
-        (Gameboard.getBoard()).forEach((element, rowIndex) => {
-            element.forEach((content, columnIndex) => {
-                const cell = document.createElement('div');
+    const createCell = (content, rowIndex, columnIndex) => {
+        const cell = document.createElement('div');
 
                 function cellClick() {
 
@@ -34,6 +31,12 @@ const Gameboard = (() => {
 
                     Gameboard.placeToken(DisplayController.getActivePlayer(), cell.getAttribute('id')[0], cell.getAttribute('id')[2]);
                     Gameboard.displayBoard();
+
+                    console.log(board)
+
+                    if (DisplayController.checkTieCondition()) {
+                        console.log('tie')
+                    }
 
                     if (((DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getRowArray()) == true) || 
                         (DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getColumnArray()) == true)) || 
@@ -50,6 +53,13 @@ const Gameboard = (() => {
                 cell.setAttribute('id', [rowIndex, columnIndex] )
                 
                 container.appendChild(cell).className = 'cell';
+    }
+
+    const displayBoard = () => {
+        container.textContent = '';
+        (Gameboard.getBoard()).forEach((element, rowIndex) => {
+            element.forEach((content, columnIndex) => {
+                createCell(content, rowIndex, columnIndex)
             })
         });
     }
@@ -57,6 +67,7 @@ const Gameboard = (() => {
     return {
         getBoard,
         placeToken,
+        createCell,
         displayBoard
     }
 
@@ -139,6 +150,25 @@ const DisplayController = (() => {
             return false;
         }
     }
+
+    const checkTieCondition = () => {
+
+        let filledSpaces = 0;
+
+        game.getBoard().forEach((element) => {
+            element.forEach((content) => {
+                if (!(content == '')) {
+                    filledSpaces += 1;
+                }
+            })
+        })
+
+        if (filledSpaces == 9) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
 
     return {
@@ -146,7 +176,8 @@ const DisplayController = (() => {
         playRound,
         switchPlayerTurn,
         checkWinConditionOne,
-        checkWinConditionTwo
+        checkWinConditionTwo,
+        checkTieCondition
     }
 })();
 
