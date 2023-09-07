@@ -31,18 +31,23 @@ const Gameboard = (() => {
 
                     Gameboard.placeToken(DisplayController.getActivePlayer(), cell.getAttribute('id')[0], cell.getAttribute('id')[2]);
                     Gameboard.displayBoard();
-
-                    console.log(board)
-
-                    if (DisplayController.checkTieCondition()) {
-                        console.log('tie')
-                    }
+                    
 
                     if (((DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getRowArray()) == true) || 
                         (DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getColumnArray()) == true)) || 
                         (DisplayController.checkWinConditionTwo(DisplayController.getActivePlayer().getCellArray()) == true)) {
-                        console.log(DisplayController.getActivePlayer().getName())
-                        return;
+
+                            DisplayController.getActivePlayer().getIsWinner = true;
+                        
+                        if (DisplayController.getActivePlayer().getIsWinner) {
+                            displayWinningBoard();
+                            console.log(DisplayController.getActivePlayer().getName())
+                        }
+                        
+                    }
+
+                    if (DisplayController.checkTieCondition()) {
+                        console.log('tie')
                     }
                     
                     DisplayController.switchPlayerTurn();
@@ -64,11 +69,27 @@ const Gameboard = (() => {
         });
     }
 
+    const displayWinningBoard = () => {
+        container.textContent = '';
+        (Gameboard.getBoard()).forEach((element, rowIndex) => {
+            element.forEach((content, columnIndex) => {
+                
+                const cell = document.createElement('div');
+                cell.textContent = content;
+                cell.setAttribute('id', [rowIndex, columnIndex] )
+                
+                container.appendChild(cell).className = 'cell';
+
+            })
+        });
+    }
+
     return {
         getBoard,
         placeToken,
         createCell,
-        displayBoard
+        displayBoard,
+        displayWinningBoard
     }
 
 })();
@@ -163,7 +184,7 @@ const DisplayController = (() => {
             })
         })
 
-        if (filledSpaces == 9) {
+        if (filledSpaces == 9  && (players[0].getIsWinner == false) && (players[1].getIsWinner == false)) {
             return true;
         } else {
             return false;
