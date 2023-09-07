@@ -26,7 +26,12 @@ const Gameboard = (() => {
             element.forEach((content, columnIndex) => {
                 const cell = document.createElement('div');
 
-                cell.addEventListener('click', () => {
+                function cellClick() {
+
+                    if (cell.textContent) {
+                        return;
+                    }
+
                     Gameboard.placeToken(DisplayController.getActivePlayer(), cell.getAttribute('id')[0], cell.getAttribute('id')[2]);
                     Gameboard.displayBoard();
 
@@ -34,13 +39,16 @@ const Gameboard = (() => {
                         (DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getColumnArray()) == true)) || 
                         (DisplayController.checkWinConditionTwo(DisplayController.getActivePlayer().getCellArray()) == true)) {
                         console.log(DisplayController.getActivePlayer().getName())
+                        return;
                     }
-
+                    
                     DisplayController.switchPlayerTurn();
-                })
-                
+                    cell.removeEventListener('click', cellClick)
+                }
+                cell.addEventListener('click', cellClick)
                 cell.textContent = content;
                 cell.setAttribute('id', [rowIndex, columnIndex] )
+                
                 container.appendChild(cell).className = 'cell';
             })
         });
@@ -54,19 +62,20 @@ const Gameboard = (() => {
 
 })();
 
-const player = (name, token, rowArray, columnArray, cellArray) => {
+const player = (name, token, rowArray, columnArray, cellArray, isWinner) => {
     const getName = () => name;
     const getToken = () => token;
     const getRowArray = () => rowArray;
     const getColumnArray = () => columnArray;
     const getCellArray = () => cellArray;
+    const getIsWinner = () => isWinner;
 
-    return { getName, getToken, getRowArray, getColumnArray, getCellArray }
+    return { getName, getToken, getRowArray, getColumnArray, getCellArray, getIsWinner }
 }
 
 const DisplayController = (() => {
     const game = Gameboard;
-    const players = [player("Player One", "X", [], [], []), player("Player Two", "O", [], [], [])]
+    const players = [player("Player One", "X", [], [], [], false), player("Player Two", "O", [], [], [], false)]
 
     game.displayBoard();
 
