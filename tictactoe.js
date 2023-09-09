@@ -14,6 +14,15 @@ const Gameboard = (() => {
 
     const getBoard = () => board;
 
+    const resetBoard = (gameBoard) => {
+        for (i = 0; i < row; i++) {
+            gameBoard[i] = [];
+            for (j = 0; j < column; j++) {
+                gameBoard[i].push('');
+            }
+        }
+    }
+
     const placeToken = (player, rowLocation, columnLocation) => {
         board[rowLocation][columnLocation] = player.getToken();
         player.getRowArray().push(rowLocation);
@@ -97,7 +106,8 @@ const Gameboard = (() => {
         placeToken,
         createCell,
         displayBoard,
-        displayWinningBoard
+        displayWinningBoard,
+        resetBoard
     }
 
 })();
@@ -109,6 +119,7 @@ const player = (name, token, rowArray, columnArray, cellArray, isWinner) => {
     const getColumnArray = () => columnArray;
     const getCellArray = () => cellArray;
     const getIsWinner = () => isWinner;
+    
 
     return { getName, getToken, getRowArray, getColumnArray, getCellArray, getIsWinner }
 }
@@ -116,7 +127,8 @@ const player = (name, token, rowArray, columnArray, cellArray, isWinner) => {
 const DisplayController = (() => {
     const game = Gameboard;
     const display = document.querySelector('.display')
-    const players = [player("Player One", "X", [], [], [], false), player("Player Two", "O", [], [], [], false)]
+    const restart = document.querySelector('.restart')
+    let players = [player("Player One", "X", [], [], [], false), player("Player Two", "O", [], [], [], false)]
 
     game.displayBoard();
 
@@ -204,6 +216,18 @@ const DisplayController = (() => {
     }
 
 
+    restart.addEventListener('click', restartGame)
+
+    function restartGame() {
+        
+        players = [player("Player One", "X", [], [], [], false), player("Player Two", "O", [], [], [], false)]
+
+        activePlayer = players[0]
+        game.resetBoard(game.getBoard());
+
+        game.displayBoard();
+        DisplayController.playRound();
+    }
     
 
     return {
