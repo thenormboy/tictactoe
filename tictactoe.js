@@ -3,6 +3,7 @@ const Gameboard = (() => {
     const column = 3;
     const board = [];
     const container = document.querySelector('.container')
+    const display = document.querySelector('.display')
 
     for (i = 0; i < row; i++) {
         board[i] = [];
@@ -32,7 +33,6 @@ const Gameboard = (() => {
                     Gameboard.placeToken(DisplayController.getActivePlayer(), cell.getAttribute('id')[0], cell.getAttribute('id')[2]);
                     Gameboard.displayBoard();
                     
-
                     if ((DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getRowArray()) == true) || 
                         (DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getColumnArray()) == true)) {
 
@@ -40,7 +40,6 @@ const Gameboard = (() => {
                         
                         if (DisplayController.getActivePlayer().getIsWinner) {
                             displayWinningBoard();
-                            console.log(DisplayController.getActivePlayer().getName())
                         }
                         
                     } else if (DisplayController.checkWinConditionTwo(DisplayController.getActivePlayer().getCellArray()) == true) {
@@ -48,25 +47,25 @@ const Gameboard = (() => {
                         
                         if (DisplayController.getActivePlayer().getIsWinner) {
                             displayWinningBoard();
-                            console.log(DisplayController.getActivePlayer().getName())
                         }
 
                     }  else if (DisplayController.checkTieCondition()) {
-                        console.log('tie')
+                        display.textContent = 'Tie';
                     }
                     
                     DisplayController.switchPlayerTurn();
+                    display.textContent = DisplayController.getActivePlayer().getName() + "'s Turn";
                     cell.removeEventListener('click', cellClick)
                 }
                 cell.addEventListener('click', cellClick)
                 cell.textContent = content;
                 cell.setAttribute('id', [rowIndex, columnIndex] )
-                
                 container.appendChild(cell).className = 'cell';
     }
 
     const displayBoard = () => {
         container.textContent = '';
+        
         (Gameboard.getBoard()).forEach((element, rowIndex) => {
             element.forEach((content, columnIndex) => {
                 createCell(content, rowIndex, columnIndex)
@@ -112,6 +111,7 @@ const player = (name, token, rowArray, columnArray, cellArray, isWinner) => {
 
 const DisplayController = (() => {
     const game = Gameboard;
+    const display = document.querySelector('.display')
     const players = [player("Player One", "X", [], [], [], false), player("Player Two", "O", [], [], [], false)]
 
     game.displayBoard();
@@ -129,6 +129,7 @@ const DisplayController = (() => {
     const getActivePlayer = () => activePlayer;
 
     const playRound = () => {
+        display.textContent = DisplayController.getActivePlayer().getName() + "'s Turn";
         game;
     }
 
