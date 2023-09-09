@@ -40,6 +40,7 @@ const Gameboard = (() => {
                         
                         if (DisplayController.getActivePlayer().getIsWinner) {
                             displayWinningBoard();
+                            return;
                         }
                         
                     } else if (DisplayController.checkWinConditionTwo(DisplayController.getActivePlayer().getCellArray()) == true) {
@@ -47,10 +48,12 @@ const Gameboard = (() => {
                         
                         if (DisplayController.getActivePlayer().getIsWinner) {
                             displayWinningBoard();
+                            return;
                         }
 
                     }  else if (DisplayController.checkTieCondition()) {
                         display.textContent = 'Tie';
+                        return;
                     }
                     
                     DisplayController.switchPlayerTurn();
@@ -74,6 +77,7 @@ const Gameboard = (() => {
     }
 
     const displayWinningBoard = () => {
+        display.textContent = DisplayController.getActivePlayer().getName() + " Wins";
         container.textContent = '';
         (Gameboard.getBoard()).forEach((element, rowIndex) => {
             element.forEach((content, columnIndex) => {
