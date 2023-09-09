@@ -33,9 +33,8 @@ const Gameboard = (() => {
                     Gameboard.displayBoard();
                     
 
-                    if (((DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getRowArray()) == true) || 
-                        (DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getColumnArray()) == true)) || 
-                        (DisplayController.checkWinConditionTwo(DisplayController.getActivePlayer().getCellArray()) == true)) {
+                    if ((DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getRowArray()) == true) || 
+                        (DisplayController.checkWinConditionOne(DisplayController.getActivePlayer().getColumnArray()) == true)) {
 
                             DisplayController.getActivePlayer().getIsWinner = true;
                         
@@ -44,9 +43,15 @@ const Gameboard = (() => {
                             console.log(DisplayController.getActivePlayer().getName())
                         }
                         
-                    }
+                    } else if (DisplayController.checkWinConditionTwo(DisplayController.getActivePlayer().getCellArray()) == true) {
+                        DisplayController.getActivePlayer().getIsWinner = true;
+                        
+                        if (DisplayController.getActivePlayer().getIsWinner) {
+                            displayWinningBoard();
+                            console.log(DisplayController.getActivePlayer().getName())
+                        }
 
-                    if (DisplayController.checkTieCondition()) {
+                    }  else if (DisplayController.checkTieCondition()) {
                         console.log('tie')
                     }
                     
@@ -133,24 +138,26 @@ const DisplayController = (() => {
         let checkOnes = []
         let checkTwos = []
 
-        if (playerArray.includes('0')) {
-            checkZeroes = playerArray.filter((value) => value == '0');
+        checkZeroes = playerArray.filter((value) => value == '0')
+        checkOnes = playerArray.filter((value) => value == '1')
+        checkTwos = playerArray.filter((value) => value == '2')
+
+        if (checkZeroes.includes('0')) {
             if (checkZeroes.length == 3) {
                 return true;
             } 
-        } else if (playerArray.includes('1')) {
-            checkOnes = playerArray.filter((value) => value == '1')
+        }
+        if (checkOnes.includes('1')) {
             if (checkOnes.length == 3) {
                 return true;
             } 
-        } else if (playerArray.includes('2')) {
-            checkTwos = playerArray.filter((value) => value == '2')
+        }
+        if (checkTwos.includes('2')) {
             if (checkTwos.length == 3) {
                 return true;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     const checkWinConditionTwo = (playerArray) => {
@@ -184,12 +191,14 @@ const DisplayController = (() => {
             })
         })
 
-        if (filledSpaces == 9  && (players[0].getIsWinner == false) && (players[1].getIsWinner == false)) {
+        if (filledSpaces == 9) {
             return true;
         } else {
             return false;
         }
     }
+
+
     
 
     return {
